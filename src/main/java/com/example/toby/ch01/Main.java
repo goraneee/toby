@@ -1,23 +1,21 @@
 package com.example.toby.ch01;
 
-import java.sql.SQLException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) {
 
-        UserDao userDao = new UserDao(new DConnectionMaker());
-        User user = new User();
-        user.setId("goranee");
-        user.setName("고라니");
-        user.setPassword("0987");
-        userDao.add(user);
-        System.out.println(user.getId() + " 등록 성공");
-
-        User getUser = userDao.get(user.getId());
-        System.out.println(getUser.getName());
-        System.out.println(getUser.getPassword());
-        System.out.println(getUser.getId() + " 조회 성공");
+        // 1.6
+        DaoFactory factory = new DaoFactory();
+        UserDao userDao1 = factory.userDao();
+        UserDao userDao2 = factory.userDao();
+        System.out.println(userDao1);
+        System.out.println(userDao2);
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        System.out.println(context.getBean("userDao", UserDao.class));
+        System.out.println(context.getBean("userDao", UserDao.class));
 
     }
 
