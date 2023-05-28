@@ -5,53 +5,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class UserDao {
 
     private ConnectionMaker connectionMaker;
+
+    private Connection c;
+
+    private User user;
 
     public UserDao(ConnectionMaker connectionMaker) {
         connectionMaker = new DConnectionMaker();
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        // db connection
-        Connection connection = connectionMaker.makeConnection();
-
-        // add user
-        PreparedStatement ps = connection.prepareStatement(
-            " INSERT INTO users(id, name, password) " + " VALUES (?, ?, ?);");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-        ps.executeUpdate();
-
-        // connection close
-        ps.close();
-        connection.close();
-    }
-
     public User get(String id) throws ClassNotFoundException, SQLException {
-        // db connection
-        Connection connection = connectionMaker.makeConnection();
+
+        this.c = connectionMaker.makeConnection();
 
         // get user
-        PreparedStatement ps = connection.prepareStatement(
+        PreparedStatement ps = c.prepareStatement(
             " SELECT * " + " FROM users WHERE id = ?;");
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
         rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
-
-        // connection close
+        this.user = new User();
+        this.user.setId(rs.getString("id"));
+        this.user.setName(rs.getString("name"));
+        this.user.setPassword(rs.getString("password"));
         rs.close();
         ps.close();
-        connection.close();
-
-        return user;
+        c.close();
+        return this.user;
     }
 
 }
