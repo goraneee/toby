@@ -14,8 +14,9 @@ public class UserDao {
 
     private User user;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        connectionMaker = new DConnectionMaker();
+    public UserDao() {
+        DaoFactory daoFactory = new DaoFactory();
+        this.connectionMaker = daoFactory.connectionMaker();
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
